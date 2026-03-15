@@ -1,6 +1,7 @@
 services:
   backend:
     container_name: genially-to-pdf-backend
+    image: leon135/genially-to-pdf-backend
     build: ./
     cpus: "1.0"
     mem_limit: 1g
@@ -10,11 +11,11 @@ services:
     env_file:
       - .env
     volumes:
-      - genially-to-pdf-database:/app/database
+      - genially-to-pdf-backend-database:/app/database
 
     restart: unless-stopped
 
 volumes:
-  genially-to-pdf-database:
-    name: genially-to-pdf-database
+  genially-to-pdf-backend-database:
+    name: genially-to-pdf-backend-database
     external: false
