@@ -1,8 +1,10 @@
-from typing import Optional
+from datetime import datetime
+from typing import Optional, cast
 
 from peewee import *
-from datetime import datetime
+
 from app.db import db
+from app.schemas.response_models import TaskStatusResponse
 from app.utils.task_status import TaskStatus
 
 
@@ -26,20 +28,20 @@ class Task(BaseModel):
     def status_enum(self) -> TaskStatus:
         return TaskStatus(self.status)
 
-    def to_dict(self) -> dict:
-        return {
-            "task_id": str(self.task_id),
-            "url": self.url,
-            "queue_position": self.queue_position(),
-            "percentage": self.percentage,
-            "status": self.status_enum.value,
-            "current_step": self.current_step,
-            "started_at": self.started_at,
-            "finished_at": self.finished_at,
-            "error_message": self.error_message,
-            "download_link": self.download_link
-        }
-    
+    def to_response(self) -> TaskStatusResponse:
+        finished_at = cast(datetime | None, self.finished_at)
+        return TaskStatusResponse(
+            task_id=str(self.task_id),
+            url=cast(str, self.url),
+            queue_position=self.queue_position(),
+            percentage=cast(int, self.percentage),
+            status=self.status_enum.value,
+            current_step=cast(str, self.current_step),
+            started_at=cast(datetime, self.started_at).isoformat(),
+            finished_at=finished_at.isoformat() if finished_at else None,
+            error_message=cast(str | None, self.error_message),
+            download_link=cast(str | None, self.download_link),
+        )
 
     def update_status(self, status: Optional[TaskStatus], progress: Optional[int] = None, current_step: Optional[str] = None, error_message: Optional[str] = None, download_link: Optional[str] = None) -> None:
         if status is not None:

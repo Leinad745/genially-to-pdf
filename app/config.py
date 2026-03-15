@@ -1,8 +1,7 @@
 import os
 from typing import Dict
+
 from app.utils.other import _tuple_from_env
-
-
 
 # configuration loaded from environment with sane defaults
 DATA_DIRECTORY = os.getenv("DATA_DIRECTORY", "data/")
@@ -15,26 +14,30 @@ DB_PATH = os.path.join(BASE_DB, "database.db")
 HUEY_DB_PATH = os.path.join(BASE_DB, "huey.db")
 
 
-TIME_BEFORE_CLEANUP = int(os.getenv("TIME_BEFORE_CLEANUP", str(60 * 5)))  # 5 min
+TIME_BEFORE_CLEANUP = int(
+    os.getenv("TIME_BEFORE_CLEANUP", str(60 * 5)))  # 5 min
 BROWSER_DIMENTIONS = _tuple_from_env("BROWSER_DIMENTIONS", (1920, 1080))
-WAIT_BETWEEN_ACTIONS = int(os.getenv("WAIT_BETWEEN_ACTIONS", "300"))  # ms between actions
-WAIT_FOR_ANIMATIONS = int(os.getenv("WAIT_FOR_ANIMATIONS", "1000"))  # ms to wait for animations after slide change
-SCALE_FACTOR = int(os.getenv("SCALE_FACTOR", "2"))  # how much to scale up the browser for better resolution (1 = no scaling, 2 = double size, etc.)
+WAIT_BETWEEN_ACTIONS = int(
+    os.getenv("WAIT_BETWEEN_ACTIONS", "300"))  # ms between actions
+# ms to wait for animations after slide change
+WAIT_FOR_ANIMATIONS = int(os.getenv("WAIT_FOR_ANIMATIONS", "1000"))
+# how much to scale up the browser for better resolution (1 = no scaling, 2 = double size, etc.)
+SCALE_FACTOR = int(os.getenv("SCALE_FACTOR", "2"))
 
 # how long to wait for the slide element to become visible before giving up
-SLIDE_VISIBLE_TIMEOUT = int(os.getenv("SLIDE_VISIBLE_TIMEOUT", "10000"))  # milliseconds
-NAVIGATION_TIMEOUT = int(os.getenv("NAVIGATION_TIMEOUT", "30000"))  # milliseconds
+SLIDE_VISIBLE_TIMEOUT = int(
+    os.getenv("SLIDE_VISIBLE_TIMEOUT", "10000"))  # milliseconds
+NAVIGATION_TIMEOUT = int(
+    os.getenv("NAVIGATION_TIMEOUT", "30000"))  # milliseconds
 
 # selectors are static, not expected to change often but you could also allow environment overrides if needed
 SELECTORS: Dict[str, str] = {
-    "slide": os.getenv("SELECTOR_SLIDE", ".genially-view-slide"),
-    "elements_to_hide": os.getenv(
-        "SELECTOR_ELEMENTS_TO_HIDE", "nav, a[title='Genially home page'], div[class*='SocialViewstyled']",
-    ),
-    "next_button": os.getenv("SELECTOR_NEXT_BUTTON", "button[aria-label='Next page']"),
-    "accept_cookies": os.getenv("SELECTOR_ACCEPT_COOKIES", "#onetrust-accept-btn-handler"),
-    "total_slides": os.getenv("SELECTOR_TOTAL_SLIDES", ".genially-view-navigation-pagination-total-slides"),
-    "current_slide_input": os.getenv("SELECTOR_CURRENT_SLIDE_INPUT", "input[data-cy='slidePaginationInput']"),
+    "slide": ".genially-view-slide",
+    "elements_to_hide": "nav, a[title='Genially home page'], div[class*='SocialViewstyled']",
+    "next_button": "button[aria-label='Next page']",
+    "accept_cookies": "#onetrust-accept-btn-handler",
+    "total_slides": ".genially-view-navigation-pagination-total-slides",
+    "current_slide_input": "input[data-cy='slidePaginationInput']",
 }
 
 HIDE_NAVIGATION_STYLES = f" {SELECTORS["elements_to_hide"]} {{ display: none !important; }}"
@@ -99,8 +102,7 @@ DISABLE_ANIMATIONS = """
 
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"
-ALLOWED_ORIGINS = [
-    "https://app.leon135.xyz",
-    "http://localhost:3000",
-]
 
+ALLOWED_ORIGINS = [
+    "http://localhost:3000" if DEV_MODE else "https://app.leon135.xyz/genially-to-pdf",
+]
