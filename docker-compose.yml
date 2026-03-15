@@ -16,4 +16,5 @@ services:
 
 volumes:
   genially-to-pdf-database:
+    name: genially-to-pdf-database
     external: false

@@ -32,7 +32,7 @@ class Task(BaseModel):
         finished_at = cast(datetime | None, self.finished_at)
         return TaskStatusResponse(
             task_id=str(self.task_id),
-            url=cast(str, self.url),
+            url=str(self.url),
             queue_position=self.queue_position(),
             percentage=cast(int, self.percentage),
             status=self.status_enum.value,

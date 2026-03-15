@@ -27,7 +27,7 @@ def create_task(
     # check referer/origin from actual HTTP request
     check_origin(request)
     try:
-        url = request_data.url
+        url = str(request_data.url)
     except ValueError as error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(error))
