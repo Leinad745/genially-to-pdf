@@ -6,6 +6,9 @@ services:
     cpus: "1.0"
     mem_limit: 1g
     memswap_limit: 1g
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     ports:
       - "53714:8000"
     env_file:
