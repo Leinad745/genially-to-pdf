@@ -57,7 +57,7 @@ def get_processed_tasks(request: Request):
 
 
 @tasks_router.get("/task/{task_id}", status_code=status.HTTP_200_OK, response_model=TaskStatusResponse, responses={403: {"model": ErrorResponse}, 404: {"model": ErrorResponse}})
-@limiter.limit("30/minute")
+@limiter.limit("60/minute")
 def get_task_status(request: Request, task_id: str):
     check_origin(request)
     task = get_task_or_404(task_id)
