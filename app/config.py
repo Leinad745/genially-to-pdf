@@ -86,6 +86,7 @@ DISABLE_ANIMATIONS = """
 *, *::before, *::after {
     animation-duration: 0.001s !important;
     animation-delay: 0s !important;
+    filter: initial !important;
     animation-fill-mode: forwards !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
@@ -97,8 +98,10 @@ DISABLE_ANIMATIONS = """
     opacity: 1 !important;
     visibility: visible !important;
     transform: none !important;
+    filter: initial !important;
 }
 """
+
 
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"

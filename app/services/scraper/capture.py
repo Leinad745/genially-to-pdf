@@ -1,23 +1,14 @@
-from app.config import (
-    SLIDES_DIRECTORY,
-    SELECTORS,
-    BROWSER_DIMENTIONS,
-    WAIT_BETWEEN_ACTIONS,
-    WAIT_FOR_ANIMATIONS,
-    HIDE_NAVIGATION_STYLES,
-    SLIDE_VISIBLE_TIMEOUT,
-    NAVIGATION_TIMEOUT,
-    PREPARE_SLIDES_STYLES,
-    SCALE_FACTOR,
-    RESET_STYLES,
-    DISABLE_ANIMATIONS,
-    HEADLESS,
-)
 from playwright.sync_api import sync_playwright
 
+from app.config import (BROWSER_DIMENTIONS, DISABLE_ANIMATIONS, HEADLESS,
+                        HIDE_NAVIGATION_STYLES, NAVIGATION_TIMEOUT,
+                        PREPARE_SLIDES_STYLES, RESET_STYLES, SCALE_FACTOR,
+                        SELECTORS, SLIDE_VISIBLE_TIMEOUT, SLIDES_DIRECTORY,
+                        WAIT_BETWEEN_ACTIONS, WAIT_FOR_ANIMATIONS)
 from app.db.models import Task
-from app.utils.task_status import TaskStatus
 from app.utils.directory import create_directory
+from app.utils.task_status import TaskStatus
+
 
 def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
     task = None
@@ -30,8 +21,10 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
         return
     create_directory(slides_directory)
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=HEADLESS, args=["--disable-dev-shm-usage"])
-        context = browser.new_context(viewport={"width": BROWSER_DIMENTIONS[0], "height": BROWSER_DIMENTIONS[1]}, reduced_motion="reduce", device_scale_factor=SCALE_FACTOR)
+        browser = p.chromium.launch(headless=HEADLESS, args=[
+                                    "--disable-dev-shm-usage"])
+        context = browser.new_context(viewport={
+                                      "width": BROWSER_DIMENTIONS[0], "height": BROWSER_DIMENTIONS[1]}, reduced_motion="reduce", device_scale_factor=SCALE_FACTOR)
 
         page = context.new_page()
         try:
@@ -60,7 +53,7 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
 
         total_slides = int(page.locator(
             SELECTORS["total_slides"]).inner_text())
-        
+
         current_slide_input = page.locator(SELECTORS["current_slide_input"])
 
         while True:
@@ -73,9 +66,9 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
 
                 if page.is_closed():
                     raise RuntimeError("Page closed unexpectedly")
-                
+
                 current_slide = int(current_slide_input.input_value())
-                
+
                 page.add_style_tag(content=DISABLE_ANIMATIONS)
                 page.add_style_tag(content=HIDE_NAVIGATION_STYLES)
                 page.wait_for_timeout(WAIT_BETWEEN_ACTIONS)
@@ -98,14 +91,17 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
                     )
                 except Exception:
                     pass
-                
+
                 try:
                     page.emulate_media(media="print")
 
-                    slide.wait_for(state="visible", timeout=SLIDE_VISIBLE_TIMEOUT)
-                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf", format='A4', print_background=True, landscape=True, scale=1 )
+                    slide.wait_for(state="visible",
+                                   timeout=SLIDE_VISIBLE_TIMEOUT)
+                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
+                             format='A4', print_background=True, landscape=True, scale=1)
                 except Exception:
-                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf", format='A4', print_background=True, landscape=True, scale=1 )
+                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
+                             format='A4', print_background=True, landscape=True, scale=1)
                 finally:
                     page.add_style_tag(content=RESET_STYLES)
 
@@ -121,20 +117,21 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
                 old_slide_number = current_slide
                 next_slide_button.click()
                 page.mouse.move(0, 0)
-                
+
                 # Sprawdź czy slajd się zmienił (max 3 próby)
                 for retry in range(3):
                     page.wait_for_timeout(WAIT_BETWEEN_ACTIONS)
                     new_slide_number = int(current_slide_input.input_value())
-                    
+
                     if new_slide_number > old_slide_number:
                         break  # Slajd się zmienił, kontynuuj
-                    
+
                     if retry < 2:  # Nie retry na ostatniej próbie
                         next_slide_button.click()  # Spróbuj ponownie
                 else:
                     # Po 3 próbach slajd się nie zmienił
-                    raise RuntimeError(f"Slide did not change after clicking next (stuck at slide {old_slide_number})")
+                    raise RuntimeError(
+                        f"Slide did not change after clicking next (stuck at slide {old_slide_number})")
             except Exception as exc:
                 # catch any of the above RuntimeErrors or other exceptions
                 if task:
