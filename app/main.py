@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import ALLOWED_ORIGINS
-from app.db import init_db, close_db
+from app.db import close_db, init_db
 from app.limiter import init_limiter
-from app.routes import tasks as tasks_router
 from app.routes import index as index_router
+from app.routes import tasks as tasks_router
 
 
 @asynccontextmanager
@@ -35,7 +35,7 @@ def create_app() -> FastAPI:
     # routers
     app.include_router(tasks_router.tasks_router)
     app.include_router(index_router.index_router)
-    
+
     return app
 
 

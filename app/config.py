@@ -104,5 +104,5 @@ DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"
 
 ALLOWED_ORIGINS = [
-    "http://localhost:3000" if DEV_MODE else "https://app.leon135.xyz",
+    "http://localhost:8000" if DEV_MODE else "https://app.leon135.xyz",
 ]
