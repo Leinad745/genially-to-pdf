@@ -1,9 +1,9 @@
-from app.db.models import Task
-from app.utils.task_status import TaskStatus
-from app.services.scraper import capture_slides
-from app.services.pdf import convert_to_pdf
-from app.utils.directory import remove_directory_recursively
 from app.config import SLIDES_DIRECTORY
+from app.db.models import Task
+from app.services.pdf import convert_to_pdf
+from app.services.scraper import capture_slides
+from app.utils.directory import remove_directory_recursively
+from app.utils.task_status import TaskStatus
 
 
 def run_task(task_id: str) -> None:

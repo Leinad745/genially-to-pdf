@@ -4,10 +4,10 @@ version = "1.0.0"
 description = "Genially to PDF converter backend with FastAPI, Huey - task managment, plawright - web scraping"
 requires-python = ">=3.12"
 dependencies = [
+    "cloakbrowser>=0.3.27",
     "fastapi>=0.135.2",
     "huey>=2.6.0",
     "peewee>=4.0.3",
-    "playwright>=1.58.0",
     "pydantic>=2.12.5",
     "pypdf2>=3.0.1",
     "python-dotenv>=1.2.2",
