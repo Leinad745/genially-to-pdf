@@ -1,10 +1,19 @@
 from playwright.sync_api import sync_playwright
 
-from app.config import (BROWSER_DIMENTIONS, DISABLE_ANIMATIONS, HEADLESS,
-                        HIDE_NAVIGATION_STYLES, NAVIGATION_TIMEOUT,
-                        PREPARE_SLIDES_STYLES, RESET_STYLES, SCALE_FACTOR,
-                        SELECTORS, SLIDE_VISIBLE_TIMEOUT, SLIDES_DIRECTORY,
-                        WAIT_BETWEEN_ACTIONS, WAIT_FOR_ANIMATIONS)
+from app.config import (
+    BROWSER_DIMENTIONS,
+    DISABLE_ANIMATIONS,
+    HEADLESS,
+    HIDE_NAVIGATION_STYLES,
+    NAVIGATION_TIMEOUT,
+    PREPARE_SLIDES_STYLES,
+    RESET_STYLES,
+    SCALE_FACTOR,
+    SELECTORS,
+    SLIDE_VISIBLE_TIMEOUT,
+    SLIDES_DIRECTORY,
+    WAIT_BETWEEN_ACTIONS,
+)
 from app.db.models import Task
 from app.utils.directory import create_directory
 from app.utils.task_status import TaskStatus
@@ -21,10 +30,12 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
         return
     create_directory(slides_directory)
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=HEADLESS, args=[
-                                    "--disable-dev-shm-usage"])
-        context = browser.new_context(viewport={
-                                      "width": BROWSER_DIMENTIONS[0], "height": BROWSER_DIMENTIONS[1]}, reduced_motion="reduce", device_scale_factor=SCALE_FACTOR)
+        browser = p.chromium.launch(headless=HEADLESS, args=["--disable-dev-shm-usage"])
+        context = browser.new_context(
+            viewport={"width": BROWSER_DIMENTIONS[0], "height": BROWSER_DIMENTIONS[1]},
+            reduced_motion="reduce",
+            device_scale_factor=SCALE_FACTOR,
+        )
 
         page = context.new_page()
         try:
@@ -48,11 +59,9 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
             pass
 
         slide = page.locator(SELECTORS["slide"]).first
-        next_slide_button = page.locator(
-            SELECTORS["next_button"])
+        next_slide_button = page.locator(SELECTORS["next_button"])
 
-        total_slides = int(page.locator(
-            SELECTORS["total_slides"]).inner_text())
+        total_slides = int(page.locator(SELECTORS["total_slides"]).inner_text())
 
         current_slide_input = page.locator(SELECTORS["current_slide_input"])
 
@@ -95,22 +104,37 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
                 try:
                     page.emulate_media(media="print")
 
-                    slide.wait_for(state="visible",
-                                   timeout=SLIDE_VISIBLE_TIMEOUT)
-                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
-                             format='A4', print_background=True, landscape=True, scale=1)
+                    slide.wait_for(state="visible", timeout=SLIDE_VISIBLE_TIMEOUT)
+                    page.pdf(
+                        path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
+                        format="A4",
+                        print_background=True,
+                        landscape=True,
+                        scale=1,
+                    )
                 except Exception:
-                    page.pdf(path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
-                             format='A4', print_background=True, landscape=True, scale=1)
+                    page.pdf(
+                        path=f"{SLIDES_DIRECTORY}/{task_id}/{current_slide}.pdf",
+                        format="A4",
+                        print_background=True,
+                        landscape=True,
+                        scale=1,
+                    )
                 finally:
                     page.add_style_tag(content=RESET_STYLES)
 
                 if task:
                     progress = 10 + int((current_slide / total_slides) * 65)
-                    task.update_status(status=TaskStatus.CAPTURING_SLIDES,
-                                       progress=progress, current_step=f"Slide {current_slide}/{total_slides}")
+                    task.update_status(
+                        status=TaskStatus.CAPTURING_SLIDES,
+                        progress=progress,
+                        current_step=f"Slide {current_slide}/{total_slides}",
+                    )
 
-                if not next_slide_button.is_visible() or next_slide_button.is_disabled():
+                if (
+                    not next_slide_button.is_visible()
+                    or next_slide_button.is_disabled()
+                ):
                     break
 
                 # Zapisz obecny slajd przed kliknięciem
@@ -131,7 +155,8 @@ def capture_slides(task_id: str, url: str, slides_directory: str) -> None:
                 else:
                     # Po 3 próbach slajd się nie zmienił
                     raise RuntimeError(
-                        f"Slide did not change after clicking next (stuck at slide {old_slide_number})")
+                        f"Slide did not change after clicking next (stuck at slide {old_slide_number})"
+                    )
             except Exception as exc:
                 # catch any of the above RuntimeErrors or other exceptions
                 if task:

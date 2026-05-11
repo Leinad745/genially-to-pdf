@@ -15,8 +15,10 @@ def convert_to_pdf(task_id: str, slides_directory: str) -> None:
     if task is None:
         return
 
-    task.update_status(status=TaskStatus.CONVERTING_TO_PDF,
-                       current_step="Converting to PDF from screenshots")
+    task.update_status(
+        status=TaskStatus.CONVERTING_TO_PDF,
+        current_step="Converting to PDF from screenshots",
+    )
 
     slides_pdf = []
     for filename in sorted(os.listdir(slides_directory), key=lambda x: int(x[:-4])):
@@ -24,10 +26,12 @@ def convert_to_pdf(task_id: str, slides_directory: str) -> None:
             continue
         slides_pdf.append(os.path.join(slides_directory, filename))
     if not slides_pdf:
-        task.update_status(status=TaskStatus.ERROR,
-                           error_message="No screenshots found in the slides directory")
+        task.update_status(
+            status=TaskStatus.ERROR,
+            error_message="No screenshots found in the slides directory",
+        )
         return
-    
+
     merger = PdfMerger()
 
     output_path = f"{PRESENTATION_DIRECTORY}/presentation_{task_id}.pdf"
@@ -36,8 +40,11 @@ def convert_to_pdf(task_id: str, slides_directory: str) -> None:
 
     for slide in slides_pdf:
         merger.append(slide)
-    
+
     merger.write(output_path)
 
-    task.update_status(TaskStatus.FINISHED,
-                       current_step="PDF ready to download", download_link=output_path)
+    task.update_status(
+        TaskStatus.FINISHED,
+        current_step="PDF ready to download",
+        download_link=output_path,
+    )

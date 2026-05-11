@@ -7,28 +7,27 @@ from app.utils.other import _tuple_from_env
 DATA_DIRECTORY = os.getenv("DATA_DIRECTORY", "data/")
 SLIDES_DIRECTORY = os.getenv("SLIDES_DIRECTORY", DATA_DIRECTORY + "slides/")
 PRESENTATION_DIRECTORY = os.getenv(
-    "PRESENTATION_DIRECTORY", DATA_DIRECTORY + "presentations/",
+    "PRESENTATION_DIRECTORY",
+    DATA_DIRECTORY + "presentations/",
 )
 BASE_DB = os.getenv("DATABASE_STORAGE_PATH", "database/")
 DB_PATH = os.path.join(BASE_DB, "database.db")
 HUEY_DB_PATH = os.path.join(BASE_DB, "huey.db")
 
 
-TIME_BEFORE_CLEANUP = int(
-    os.getenv("TIME_BEFORE_CLEANUP", str(60 * 5)))  # 5 min
+TIME_BEFORE_CLEANUP = int(os.getenv("TIME_BEFORE_CLEANUP", str(60 * 5)))  # 5 min
 BROWSER_DIMENTIONS = _tuple_from_env("BROWSER_DIMENTIONS", (1920, 1080))
 WAIT_BETWEEN_ACTIONS = int(
-    os.getenv("WAIT_BETWEEN_ACTIONS", "300"))  # ms between actions
+    os.getenv("WAIT_BETWEEN_ACTIONS", "300")
+)  # ms between actions
 # ms to wait for animations after slide change
 WAIT_FOR_ANIMATIONS = int(os.getenv("WAIT_FOR_ANIMATIONS", "1000"))
 # how much to scale up the browser for better resolution (1 = no scaling, 2 = double size, etc.)
 SCALE_FACTOR = int(os.getenv("SCALE_FACTOR", "2"))
 
 # how long to wait for the slide element to become visible before giving up
-SLIDE_VISIBLE_TIMEOUT = int(
-    os.getenv("SLIDE_VISIBLE_TIMEOUT", "10000"))  # milliseconds
-NAVIGATION_TIMEOUT = int(
-    os.getenv("NAVIGATION_TIMEOUT", "30000"))  # milliseconds
+SLIDE_VISIBLE_TIMEOUT = int(os.getenv("SLIDE_VISIBLE_TIMEOUT", "10000"))  # milliseconds
+NAVIGATION_TIMEOUT = int(os.getenv("NAVIGATION_TIMEOUT", "30000"))  # milliseconds
 
 # selectors are static, not expected to change often but you could also allow environment overrides if needed
 SELECTORS: Dict[str, str] = {
@@ -40,8 +39,12 @@ SELECTORS: Dict[str, str] = {
     "current_slide_input": "input[data-cy='slidePaginationInput']",
 }
 
-HIDE_NAVIGATION_STYLES = f" {SELECTORS["elements_to_hide"]} {{ display: none !important; }}"
-SHOW_NAVIGATION_STYLES = f" {SELECTORS["elements_to_hide"]} {{ display: block !important; }}"
+HIDE_NAVIGATION_STYLES = (
+    f" {SELECTORS['elements_to_hide']} {{ display: none !important; }}"
+)
+SHOW_NAVIGATION_STYLES = (
+    f" {SELECTORS['elements_to_hide']} {{ display: block !important; }}"
+)
 
 PREPARE_SLIDES_STYLES = f"""
 .genially-view-slide-container {{

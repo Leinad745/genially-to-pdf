@@ -7,6 +7,7 @@ db = peewee.SqliteDatabase(DB_PATH)
 def init_db() -> None:
     db.connect(reuse_if_open=True)
     from app.db.models import Task
+
     db.create_tables([Task])
 
 

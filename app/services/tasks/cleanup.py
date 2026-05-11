@@ -2,6 +2,7 @@ import os
 from app.config import PRESENTATION_DIRECTORY, SLIDES_DIRECTORY, TIME_BEFORE_CLEANUP
 import time
 
+
 def cleanup_files() -> None:
     if os.path.exists(PRESENTATION_DIRECTORY):
         for filename in os.listdir(PRESENTATION_DIRECTORY):

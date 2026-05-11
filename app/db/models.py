@@ -43,7 +43,14 @@ class Task(BaseModel):
             download_link=cast(str | None, self.download_link),
         )
 
-    def update_status(self, status: Optional[TaskStatus], progress: Optional[int] = None, current_step: Optional[str] = None, error_message: Optional[str] = None, download_link: Optional[str] = None) -> None:
+    def update_status(
+        self,
+        status: Optional[TaskStatus],
+        progress: Optional[int] = None,
+        current_step: Optional[str] = None,
+        error_message: Optional[str] = None,
+        download_link: Optional[str] = None,
+    ) -> None:
         if status is not None:
             self.status = status
         if progress is not None:
@@ -67,8 +74,7 @@ class Task(BaseModel):
         if self.status != TaskStatus.QUEUED:
             return None
         return (
-            Task
-            .select()
+            Task.select()
             .where(
                 Task.status == TaskStatus.QUEUED,
                 Task.started_at < self.started_at,
