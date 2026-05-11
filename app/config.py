@@ -59,7 +59,7 @@ PREPARE_SLIDES_STYLES = f"""
     top: 0;
     transform: translateZ(0);
     z-index: 1;
-    overflow: visible !important;
+    overflow: hidden !important;
 }}
 @page {{
     size: A4 landscape;
@@ -72,7 +72,7 @@ PREPARE_SLIDES_STYLES = f"""
     padding-top: 4vh !important;
     box-sizing: border-box !important;
     display: block !important;
-    overflow: visible !important;
+    overflow: hidden !important;
 }}
 {SELECTORS["elements_to_hide"]} {{ display: none !important; }}
 """
