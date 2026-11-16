@@ -111,6 +111,14 @@ DISABLE_ANIMATIONS = """
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 HEADLESS = os.getenv("HEADLESS", "true").lower() == "true"
 
+# directory with the static frontend served at "/"
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+
+# Additional cross-origin frontends allowed to call the API (comma-separated).
+# The frontend this backend serves is same-origin and is always allowed, so this
+# only needs values when a separate site hosts the UI.
 ALLOWED_ORIGINS = [
-    "http://localhost:8000" if DEV_MODE else "https://app.leon135.xyz",
+    origin.strip()
+    for origin in os.getenv("ALLOWED_ORIGINS", "").split(",")
+    if origin.strip()
 ]

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genially → PDF</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Crect x='8' y='8' width='16' height='16' fill='%238b5cf6'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --panel:#111111;
+    --line:#262626;
+    --text:#ededed;
+    --muted:#8a8a8a;
+    --accent:#8b5cf6;
+    --accent-2:#a78bfa;
+    --accent-press:#7c3aed;
+    --error:#f87171;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  a{color:var(--accent-2);text-decoration:none}
+  a:hover{color:var(--accent)}
+
+  .edge{height:3px;background:var(--accent)}
+
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 16px;border-bottom:1px solid var(--line);
+    max-width:760px;width:100%;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em}
+  .brand .sq{width:14px;height:14px;background:var(--accent);display:inline-block}
+  .brand .arw{color:var(--accent-2)}
+  header .api{
+    font-size:12px;text-transform:uppercase;letter-spacing:.1em;
+    border:1px solid var(--line);padding:6px 12px;color:var(--muted);
+  }
+  header .api:hover{border-color:var(--accent);color:var(--accent-2)}
+
+  main{max-width:760px;width:100%;margin:0 auto;padding:24px 16px;flex:1}
+
+  .label{
+    font-size:11px;text-transform:uppercase;letter-spacing:.14em;
+    color:var(--muted);margin:0 0 10px;
+  }
+  .card{border:1px solid var(--line);background:var(--panel);padding:18px}
+
+  .row{display:flex;gap:10px}
+  input{
+    flex:1;background:#000;border:1px solid var(--line);color:var(--text);
+    padding:13px 14px;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    border-radius:0;outline:none;min-width:0;
+  }
+  input::placeholder{color:#555}
+  input:focus{border-color:var(--accent)}
+
+  button{
+    font-family:inherit;border-radius:0;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.08em;font-size:13px;font-weight:600;
+    padding:13px 22px;white-space:nowrap;
+    background:var(--accent);color:#0a0a0a;border:1px solid var(--accent);
+    transition:background .15s,border-color .15s,color .15s;
+  }
+  button:hover{background:var(--accent-press);border-color:var(--accent-press)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+
+  .hint{font-size:12px;color:var(--muted);margin:12px 0 0}
+  .err{font-size:13px;color:var(--error);margin:12px 0 0;min-height:0}
+  .err:empty{display:none}
+
+  #jobs{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  #jobs:empty{display:none}
+
+  .job{border:1px solid var(--line);background:var(--panel);padding:16px;position:relative}
+  .job::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line)}
+  .job.active::before{background:var(--accent)}
+  .job.done::before{background:var(--accent)}
+  .job.failed::before{background:var(--error)}
+
+  .job .url{
+    font-size:12px;color:var(--muted);word-break:break-all;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  .job .meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 10px}
+  .pill{
+    font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+    padding:4px 9px;border:1px solid var(--line);color:var(--accent-2);white-space:nowrap;
+  }
+  .job.failed .pill{color:var(--error);border-color:var(--error)}
+  .step{font-size:12px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;text-align:right}
+
+  .bar{height:8px;background:#000;border:1px solid var(--line)}
+  .fill{height:100%;background:var(--accent);width:0%;transition:width .35s ease}
+  .job.failed .fill{background:var(--error)}
+
+  .actions{margin-top:14px;display:flex;gap:10px}
+  .actions:empty{display:none}
+  .download{background:transparent;color:var(--accent-2);border:1px solid var(--accent)}
+  .download:hover{background:var(--accent);color:#0a0a0a}
+  .dismiss{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .dismiss:hover{background:#000;color:var(--text);border-color:var(--line)}
+
+  footer{
+    max-width:760px;width:100%;margin:0 auto;padding:20px 16px;
+    border-top:1px solid var(--line);font-size:12px;color:#555;
+  }
+
+  @media (max-width:540px){
+    .row{flex-direction:column}
+    button{width:100%}
+  }
+</style>
+</head>
+<body>
+  <div class="edge"></div>
+
+  <header>
+    <div class="brand"><span class="sq"></span>genially<span class="arw">→</span>pdf</div>
+    <a class="api" href="/docs">API</a>
+  </header>
+
+  <main>
+    <section class="card">
+      <p class="label">URL de Genially</p>
+      <div class="row">
+        <input id="url" type="url" autocomplete="off" spellcheck="false"
+               placeholder="https://view.genially.com/...">
+        <button id="convert">Convertir</button>
+      </div>
+      <p class="hint">Pega el enlace de una presentación de Genially y pulsa Convertir. Puedes añadir varias.</p>
+      <p class="err" id="err"></p>
+    </section>
+
+    <section id="jobs"></section>
+  </main>
+
+  <footer>Genially → PDF · servido por el backend</footer>
+
+<script>
+(function(){
+  "use strict";
+  var URL_RE = /^https:\/\/view\.genially\.com\/.+/;
+  var STATUS = {
+    queued:"En cola",
+    capturing_slides:"Capturando",
+    converting_to_pdf:"Generando PDF",
+    finished:"Listo",
+    error:"Error"
+  };
+
+  var input = document.getElementById("url");
+  var convertBtn = document.getElementById("convert");
+  var errEl = document.getElementById("err");
+  var jobsEl = document.getElementById("jobs");
+
+  function showErr(msg){ errEl.textContent = msg || ""; }
+
+  function slugFromUrl(u){
+    try{
+      var parts = new window.URL(u).pathname.split("/").filter(Boolean);
+      return parts[parts.length-1] || "genially";
+    }catch(e){ return "genially"; }
+  }
+
+  async function createTask(url){
+    var res = await fetch("/create-task", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({url:url})
+    });
+    var data = {};
+    try{ data = await res.json(); }catch(e){}
+    if(!res.ok){
+      var detail = data && data.detail ? data.detail : ("Error "+res.status);
+      if(res.status === 429) detail = "Demasiadas solicitudes. Espera un momento.";
+      throw new Error(typeof detail === "string" ? detail : "Error al crear la tarea");
+    }
+    return data;
+  }
+
+  async function fetchStatus(id){
+    var res = await fetch("/task/"+id);
+    if(!res.ok) throw new Error("No se pudo consultar el estado");
+    return res.json();
+  }
+
+  async function downloadPdf(id, slug, btn){
+    var original = btn.textContent;
+    btn.disabled = true; btn.textContent = "Descargando…";
+    try{
+      var res = await fetch("/download/"+id);
+      if(!res.ok) throw new Error("La descarga falló");
+      var blob = await res.blob();
+      var href = window.URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = href; a.download = "genially_"+slug+".pdf";
+      document.body.appendChild(a); a.click(); a.remove();
+      window.URL.revokeObjectURL(href);
+    }catch(e){
+      alertInline(btn, e.message);
+    }finally{
+      btn.disabled = false; btn.textContent = original;
+    }
+  }
+
+  function alertInline(btn, msg){
+    var holder = btn.closest(".job").querySelector(".step");
+    if(holder){ holder.textContent = msg; holder.style.color = "var(--error)"; }
+  }
+
+  function buildJob(task){
+    var slug = slugFromUrl(task.url);
+    var el = document.createElement("div");
+    el.className = "job active";
+    el.innerHTML =
+      '<div class="url"></div>' +
+      '<div class="meta"><span class="pill"></span><span class="step"></span></div>' +
+      '<div class="bar"><div class="fill"></div></div>' +
+      '<div class="actions"></div>';
+    el.querySelector(".url").textContent = task.url;
+    jobsEl.prepend(el);
+
+    var pill = el.querySelector(".pill");
+    var step = el.querySelector(".step");
+    var fill = el.querySelector(".fill");
+    var actions = el.querySelector(".actions");
+
+    function render(t){
+      pill.textContent = STATUS[t.status] || t.status;
+      step.textContent = t.status === "error"
+        ? (t.error_message || "Error")
+        : (t.current_step || "");
+      step.style.color = "";
+      fill.style.width = (t.percentage||0) + "%";
+      el.classList.remove("active","done","failed");
+      if(t.status === "finished"){
+        el.classList.add("done");
+        fill.style.width = "100%";
+        actions.innerHTML = "";
+        var dl = document.createElement("button");
+        dl.className = "download"; dl.textContent = "Descargar PDF";
+        dl.addEventListener("click", function(){ downloadPdf(t.task_id, slug, dl); });
+        actions.appendChild(dl);
+      }else if(t.status === "error"){
+        el.classList.add("failed");
+        actions.innerHTML = "";
+        var d = document.createElement("button");
+        d.className = "dismiss"; d.textContent = "Descartar";
+        d.addEventListener("click", function(){ el.remove(); });
+        actions.appendChild(d);
+      }else{
+        el.classList.add("active");
+      }
+    }
+
+    render(task);
+    return {el:el, render:render};
+  }
+
+  function poll(id, view){
+    var timer = setInterval(async function(){
+      try{
+        var t = await fetchStatus(id);
+        view.render(t);
+        if(t.status === "finished" || t.status === "error"){ clearInterval(timer); }
+      }catch(e){
+        /* transient; keep trying */
+      }
+    }, 1500);
+  }
+
+  async function submit(){
+    var url = input.value.trim();
+    showErr("");
+    if(!URL_RE.test(url)){
+      showErr("Debe ser un enlace válido de https://view.genially.com/");
+      return;
+    }
+    convertBtn.disabled = true;
+    try{
+      var task = await createTask(url);
+      var view = buildJob(task);
+      poll(task.task_id, view);
+      input.value = "";
+      input.focus();
+    }catch(e){
+      showErr(e.message);
+    }finally{
+      convertBtn.disabled = false;
+    }
+  }
+
+  convertBtn.addEventListener("click", submit);
+  input.addEventListener("keydown", function(e){ if(e.key === "Enter") submit(); });
+})();
+</script>
+</body>
+</html>

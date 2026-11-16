@@ -1,19 +1,21 @@
-from fastapi import APIRouter, Request, status
-from fastapi.responses import RedirectResponse
+import os
 
-from app.limiter import limiter
-from app.schemas.response_models import ErrorResponse
-from app.utils.validate_request import check_origin
+from fastapi import APIRouter
+from fastapi.responses import FileResponse, HTMLResponse
+
+from app.config import STATIC_DIR
 
 index_router = APIRouter()
 
 
-@index_router.get(
-    "/",
-    status_code=status.HTTP_303_SEE_OTHER,
-    responses={403: {"model": ErrorResponse}},
-)
-@limiter.limit("15/minute")
-def index(request: Request):
-    check_origin(request)
-    return RedirectResponse(url="/docs", status_code=303)
+@index_router.get("/", include_in_schema=False)
+def index():
+    """Serve the web frontend. Public so the browser can load the page;
+    the API routes it calls are still protected by check_origin."""
+    index_file = os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file, media_type="text/html")
+    return HTMLResponse(
+        "<h1>Frontend not found</h1><p>See <a href='/docs'>/docs</a>.</p>",
+        status_code=404,
+    )
