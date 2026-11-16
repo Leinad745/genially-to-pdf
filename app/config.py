@@ -32,11 +32,13 @@ NAVIGATION_TIMEOUT = int(os.getenv("NAVIGATION_TIMEOUT", "30000"))  # millisecon
 # selectors are static, not expected to change often but you could also allow environment overrides if needed
 SELECTORS: Dict[str, str] = {
     "slide": ".genially-view-slide",
-    "elements_to_hide": "nav, a[title='Genially home page'], div[class*='SocialViewstyled']",
-    "next_button": "button[aria-label='Next page']",
+    # the active slide container carries a data-cy="slide-<uuid>"; the persistent
+    # overlay container is data-cy="slide-transversal-id" and must be ignored
+    "slide_container": ".genially-view-slide-container[data-cy^='slide-']",
+    "transversal_id": "slide-transversal-id",
+    "elements_to_hide": "nav, a[title='Genially home page'], div[class*='SocialViewstyled'], [data-cy='eduWatermark']",
+    "next_button": "button[data-cy='nextSlideButton']",
     "accept_cookies": "#onetrust-accept-btn-handler",
-    "total_slides": ".genially-view-navigation-pagination-total-slides",
-    "current_slide_input": "input[data-cy='slidePaginationInput']",
 }
 
 HIDE_NAVIGATION_STYLES = (

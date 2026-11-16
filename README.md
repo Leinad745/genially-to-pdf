@@ -54,7 +54,7 @@ The URL must be a `https://view.genially.com/` link.
 
 ### Pipeline Details
 
-1. **Browser Automation** (`capture.py`): Uses [CloakBrowser](https://github.com/cloakhq/cloakbrowser) (Playwright-based) to open the Genially presentation, accept cookie banners, disable CSS animations, hide navigation elements, and iterate through every slide. Each slide is printed to PDF at A4 landscape format at 2× scale factor.
+1. **Browser Automation** (`capture.py`): Uses [CloakBrowser](https://github.com/cloakhq/cloakbrowser) (Playwright-based) to open the Genially presentation, accept cookie banners, disable CSS animations, and hide navigation elements (including the Genially watermark). It reads the total slide count from Genially's view API, then walks through every slide using the on-screen next-slide control until the last one. Each slide is printed to PDF at A4 landscape format at 2× scale factor.
 
 2. **PDF Merging** (`converter.py`): Sorts captured slide PDFs by number, then merges them with `PyPDF2.PdfMerger` into a single file stored in the presentations directory.
 
@@ -95,7 +95,7 @@ docker compose up --build
 
 This runs the service on port `53714` (mapped to container port `8000`). See `docker-compose.yml` for resource limits and volume configuration.
 
-The Docker image is based on `cloakhq/cloakbrowser` which includes Playwright and system dependencies for Chromium.
+The Docker image is based on `python:3.12-slim` and installs Chromium's system dependencies via Playwright. During the build it pre-downloads CloakBrowser's free Chromium build (no license key required), so the first conversion starts without delay.
 
 ### Manual
 
